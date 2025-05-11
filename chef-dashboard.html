@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitchenShare - Chef Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .sidebar-item.active {
+            background-color: #f97316;
+            color: white;
+        }
+        .sidebar-item:hover {
+            background-color: #ffedd5;
+        }
+        .sidebar-item.active:hover {
+            background-color: #ea580c;
+        }
+        .kitchen-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .booking-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-white shadow-md z-10">
+            <div class="p-4 border-b">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-orange-500 rounded-md flex items-center justify-center">
+                        <i class="fas fa-utensils text-white"></i>
+                    </div>
+                    <span class="ml-3 text-xl font-bold text-gray-800">KitchenShare</span>
+                </div>
+            </div>
+            <div class="py-4">
+                <div class="px-4 py-2 text-sm text-gray-600">MAIN MENU</div>
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:text-orange-500 transition-colors duration-200 active" data-section="dashboard">
+                    <i class="fas fa-home w-5"></i>
+                    <span class="ml-3">Dashboard</span>
+                </a>
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:text-orange-500 transition-colors duration-200" data-section="find-kitchens">
+                    <i class="fas fa-search w-5"></i>
+                    <span class="ml-3">Find Kitchens</span>
+                </a>
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:text-orange-500 transition-colors duration-200" data-section="my-bookings">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span class="ml-3">My Bookings</span>
+                </a>
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:text-orange-500 transition-colors duration-200" data-section="favorites">
+                    <i class="fas fa-heart w-5"></i>
+                    <span class="ml-3">Favorites</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-sm text-gray-600">ACCOUNT</div>
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:text-orange-500 transition-colors duration-200" data-section="profile">
+                    <i class="fas fa-user w-5"></i>
+                    <span class="ml-3">Profile</span>
+                </a>
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:text-orange-500 transition-colors duration-200" data-section="payments">
+                    <i class="fas fa-credit-card w-5"></i>
+                    <span class="ml-3">Payments</span>
+                </a>
+                <a href="#" class="sidebar-item flex items-center px-6 py-3 text-gray-700 hover:text-orange-500 transition-colors duration-200" data-section="support">
+                    <i class="fas fa-question-circle w-5"></i>
+                    <span class="ml-3">Support</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm z-10">
+                <div class="flex items-center justify-between px-6 py-3">
+                    <h1 class="text-xl font-semibold text-gray-800" id="section-title">Dashboard</h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="text-gray-500 hover:text-orange-500 focus:outline-none">
+                                <i class="fas fa-bell"></i>
+                                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                        </div>
+                        <div class="flex items-center">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=48&h=48&q=80" alt="User profile" class="w-8 h-8 rounded-full" id="dashboardUserAvatarTop">
+                            <span class="ml-2 text-sm font-medium text-gray-700" id="dashboardUserNameTop">Chef Alex</span>
+                            <i class="fas fa-chevron-down ml-1 text-gray-500 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div id="dashboard" class="content-section active p-6">
+                <div class="mb-8">
+                    <h2 class="text-lg font-semibold mb-4">Welcome back, <span id="dashboardWelcomeName">Chef Alex</span>!</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-blue-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-500">Upcoming Bookings</p>
+                                    <p class="text-2xl font-bold">3</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-calendar-check text-blue-500"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-green-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-500">Recent Bookings</p>
+                                    <p class="text-2xl font-bold">12</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-history text-green-500"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-purple-500">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-500">Favorite Kitchens</p>
+                                    <p class="text-2xl font-bold">5</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-heart text-purple-500"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-5 mb-8">
+                    <h3 class="font-semibold text-lg mb-4">Upcoming Bookings</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 border rounded-lg flex items-center justify-between booking-card transition-shadow duration-300">
+                            <div class="flex items-center">
+                                <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-utensils text-2xl text-gray-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Downtown Culinary Studio</h4>
+                                    <p class="text-sm text-gray-500">Jul 15, 2023 • 10:00 AM - 2:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">In 3 days</span>
+                                <button class="text-gray-500 hover:text-gray-700"><i class="fas fa-ellipsis-v"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 border rounded-lg flex items-center justify-between booking-card transition-shadow duration-300">
+                            <div class="flex items-center">
+                                <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-utensils text-2xl text-gray-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Eastside Prep Kitchen</h4>
+                                    <p class="text-sm text-gray-500">Jul 18, 2023 • 8:00 AM - 12:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">In 6 days</span>
+                                <button class="text-gray-500 hover:text-gray-700"><i class="fas fa-ellipsis-v"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 border rounded-lg flex items-center justify-between booking-card transition-shadow duration-300">
+                            <div class="flex items-center">
+                                <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-utensils text-2xl text-gray-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Harbor View Kitchen</h4>
+                                    <p class="text-sm text-gray-500">Jul 22, 2023 • 2:00 PM - 8:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">In 10 days</span>
+                                <button class="text-gray-500 hover:text-gray-700"><i class="fas fa-ellipsis-v"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-semibold text-lg">Recommended Kitchens</h3>
+                        <a href="#" class="text-orange-500 text-sm hover:underline" data-section-link="find-kitchens">View all</a>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-40 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors duration-200">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Gourmet Corner Kitchen</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.8</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-3">Downtown • 3 mi away</p>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$45<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-40 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1565538810643-b5bdb714032a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors duration-200">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Artisan Food Lab</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.6</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-3">Westside • 5 mi away</p>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$55<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Find Kitchens Content -->
+            <div id="find-kitchens" class="content-section p-6">
+                <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
+                    <h3 class="font-semibold text-lg mb-4">Find Your Perfect Kitchen</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                            <div class="relative">
+                                <select class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-md">
+                                    <option>Any Location</option>
+                                    <option>Downtown</option>
+                                    <option>Eastside</option>
+                                    <option>Westside</option>
+                                    <option>Northern District</option>
+                                    <option>Southern Area</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="date" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                            <select class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-md">
+                                <option>Any Time</option>
+                                <option>Morning (6AM-12PM)</option>
+                                <option>Afternoon (12PM-5PM)</option>
+                                <option>Evening (5PM-10PM)</option>
+                                <option>Late Night (10PM-6AM)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Equipment Needed</label>
+                            <select class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-md">
+                                <option>All Equipment</option>
+                                <option>Commercial Oven</option>
+                                <option>Deep Fryer</option>
+                                <option>Mixer</option>
+                                <option>Walk-in Freezer</option>
+                                <option>Grill</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center">
+                        <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
+                            <i class="fas fa-search mr-2"></i> Search Kitchens
+                        </button>
+                        <button class="ml-3 text-gray-600 hover:text-gray-800 text-sm">
+                            <i class="fas fa-sliders-h mr-1"></i> More Filters
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-semibold text-lg">12 Kitchens Found</h3>
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-600 mr-2">Sort by:</span>
+                            <select class="text-sm border-gray-300 rounded-md focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+                                <option>Relevance</option>
+                                <option>Highest Rated</option>
+                                <option>Lowest Price</option>
+                                <option>Closest Distance</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <!-- Kitchen Card 1 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors duration-200">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Gourmet Corner Kitchen</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.8</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Downtown • 3 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Commercial Oven</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Mixer</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Grill</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$45<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kitchen Card 2 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1565538810643-b5bdb714032a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 transition-colors duration-200">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Artisan Food Lab</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.6</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Westside • 5 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Deep Fryer</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Walk-in Freezer</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$55<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kitchen Card 3 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors duration-200">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Metro Culinary Space</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.9</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Eastside • 2 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Commercial Oven</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Mixer</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$60<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kitchen Card 4 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1556910633-5099dc3b3e2a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors duration-200">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Harbor View Kitchen</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.7</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Waterfront • 4 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Commercial Oven</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Grill</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$50<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kitchen Card 5 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors duration-200">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Eastside Prep Kitchen</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.5</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Eastside • 6 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Deep Fryer</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Walk-in Freezer</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$40<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kitchen Card 6 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1588854337221-4cf9fa96059c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors duration-200">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Downtown Culinary Studio</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.4</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Downtown • 1 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Commercial Oven</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Mixer</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$65<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-center">
+                        <button class="px-4 py-2 border rounded-md text-gray-700 mr-2 hover:bg-gray-50">Previous</button>
+                        <button class="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600">Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Bookings Content -->
+            <div id="my-bookings" class="content-section p-6">
+                <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
+                    <div class="border-b pb-4 mb-4">
+                        <div class="flex space-x-4">
+                            <button class="px-4 py-2 font-medium text-orange-500 border-b-2 border-orange-500 focus:outline-none">
+                                Upcoming Bookings
+                            </button>
+                            <button class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700 focus:outline-none">
+                                Past Bookings
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Upcoming Booking 1 -->
+                        <div class="border rounded-lg p-5">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                            <i class="fas fa-utensils text-2xl text-gray-500"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-lg">Downtown Culinary Studio</h4>
+                                            <p class="text-gray-500">123 Main St, Downtown</p>
+                                        </div>
+                                    </div>
+                                    <div class="ml-20">
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                            <div>
+                                                <p class="text-gray-500">Date</p>
+                                                <p class="font-medium">Jul 15, 2023</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-500">Time</p>
+                                                <p class="font-medium">10:00 AM - 2:00 PM</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-500">Total Hours</p>
+                                                <p class="font-medium">4 hours</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-500">Total Cost</p>
+                                                <p class="font-medium">$260.00</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-start md:items-end mt-4 md:mt-0">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full mb-2">In 3 days</span>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">Get Directions</button>
+                                        <button class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-red-500 hover:bg-gray-50">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Booking 2 -->
+                        <div class="border rounded-lg p-5">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                            <i class="fas fa-utensils text-2xl text-gray-500"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-lg">Eastside Prep Kitchen</h4>
+                                            <p class="text-gray-500">456 Oak St, Eastside</p>
+                                        </div>
+                                    </div>
+                                    <div class="ml-20">
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                            <div>
+                                                <p class="text-gray-500">Date</p>
+                                                <p class="font-medium">Jul 18, 2023</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-500">Time</p>
+                                                <p class="font-medium">8:00 AM - 12:00 PM</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-500">Total Hours</p>
+                                                <p class="font-medium">4 hours</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-500">Total Cost</p>
+                                                <p class="font-medium">$160.00</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-start md:items-end mt-4 md:mt-0">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full mb-2">In 6 days</span>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">Get Directions</button>
+                                        <button class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-red-500 hover:bg-gray-50">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Booking 3 -->
+                        <div class="border rounded-lg p-5">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                            <i class="fas fa-utensils text-2xl text-gray-500"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-lg">Harbor View Kitchen</h4>
+                                            <p class="text-gray-500">789 Harbor Dr, Waterfront</p>
+                                        </div>
+                                    </div>
+                                    <div class="ml-20">
+                                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                            <div>
+                                                <p class="text-gray-500">Date</p>
+                                                <p class="font-medium">Jul 22, 2023</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-500">Time</p>
+                                                <p class="font-medium">2:00 PM - 8:00 PM</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-500">Total Hours</p>
+                                                <p class="font-medium">6 hours</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-gray-500">Total Cost</p>
+                                                <p class="font-medium">$300.00</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-start md:items-end mt-4 md:mt-0">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full mb-2">In 10 days</span>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">Get Directions</button>
+                                        <button class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-red-500 hover:bg-gray-50">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Favorites Content -->
+            <div id="favorites" class="content-section p-6">
+                <div class="mb-6">
+                    <h3 class="font-semibold text-lg mb-4">Your Favorite Kitchens</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <!-- Favorite Kitchen 1 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1565538810643-b5bdb714032a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 transition-colors duration-200">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Artisan Food Lab</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.6</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Westside • 5 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Deep Fryer</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Walk-in Freezer</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$55<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Favorite Kitchen 2 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 transition-colors duration-200">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Metro Culinary Space</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.9</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Eastside • 2 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Commercial Oven</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Mixer</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$60<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Favorite Kitchen 3 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1556910633-5099dc3b3e2a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 transition-colors duration-200">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Harbor View Kitchen</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.7</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Waterfront • 4 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Commercial Oven</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Grill</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$50<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Favorite Kitchen 4 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 transition-colors duration-200">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">The Chef's Workshop</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.5</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Northern District • 8 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Mixer</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Grill</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$48<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Favorite Kitchen 5 -->
+                        <div class="bg-white border rounded-lg overflow-hidden kitchen-card transition-all duration-300">
+                            <div class="h-48 bg-gray-200 relative">
+                                <img src="https://images.unsplash.com/photo-1556910633-5099dc3b3e2a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kitchen" class="w-full h-full object-cover">
+                                <div class="absolute top-2 right-2">
+                                    <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-red-500 transition-colors duration-200">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between mb-2">
+                                    <h4 class="font-medium">Sweet Creations Lab</h4>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                        <span class="ml-1 text-sm font-medium">4.4</span>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-500 mb-2">Southern Area • 5 mi away</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Commercial Oven</span>
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">Mixer</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-medium text-gray-800">$42<span class="text-sm text-gray-500">/hour</span></p>
+                                    <button class="px-3 py-1 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Content -->
+            <div id="profile" class="content-section p-6">
+                <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
+                    <h3 class="font-semibold text-lg mb-4">Profile Information</h3>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-1/3 mb-6 md:mb-0 flex flex-col items-center">
+                            <div class="w-32 h-32 bg-gray-200 rounded-full overflow-hidden mb-4">
+                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=128&h=128&q=80" alt="Profile" class="w-full h-full object-cover" id="profileUserAvatar">
+                            </div>
+                            <button class="px-4 py-2 border rounded-md text-sm text-gray-700 hover:bg-gray-50 mb-2">Change Photo</button>
+                        </div>
+                        <div class="md:w-2/3 md:pl-8">
+                            <form id="chef-profile-form">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                        <input type="text" id="profileFirstName" value="Alex" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                        <input type="text" id="profileLastName" value="Johnson" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                        <input type="email" id="profileEmail" value="alex.johnson@example.com" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm" readonly>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                        <input type="tel" id="profilePhone" value="(555) 123-4567" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+                                        <input type="text" id="profileBusinessName" value="Alex's Gourmet Creations" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Business Type</label>
+                                        <select id="profileBusinessType" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                                            <option>Bakery</option>
+                                            <option>Catering</option>
+                                            <option>Meal Prep</option>
+                                            <option>Food Truck</option>
+                                            <option>Restaurant</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Business Description</label>
+                                    <textarea id="profileBusinessDescription" rows="3" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">Specializing in custom desserts and pastries for events and special occasions. Offering a range of baked goods from classic recipes to innovative creations.</textarea>
+                                </div>
+                                <div class="mb-5">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Equipment</label>
+                                    <div class="flex flex-wrap gap-2">
+                                        <div class="flex items-center">
+                                            <input id="eq-oven" type="checkbox" checked class="h-4 w-4 text-orange-500 focus:ring-orange-400 border-gray-300 rounded">
+                                            <label for="eq-oven" class="ml-2 text-sm text-gray-700">Commercial Oven</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="eq-mixer" type="checkbox" checked class="h-4 w-4 text-orange-500 focus:ring-orange-400 border-gray-300 rounded">
+                                            <label for="eq-mixer" class="ml-2 text-sm text-gray-700">Mixer</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="eq-freezer" type="checkbox" class="h-4 w-4 text-orange-500 focus:ring-orange-400 border-gray-300 rounded">
+                                            <label for="eq-freezer" class="ml-2 text-sm text-gray-700">Walk-in Freezer</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="eq-fryer" type="checkbox" class="h-4 w-4 text-orange-500 focus:ring-orange-400 border-gray-300 rounded">
+                                            <label for="eq-fryer" class="ml-2 text-sm text-gray-700">Deep Fryer</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input id="eq-grill" type="checkbox" class="h-4 w-4 text-orange-500 focus:ring-orange-400 border-gray-300 rounded">
+                                            <label for="eq-grill" class="ml-2 text-sm text-gray-700">Grill</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2 hover:bg-gray-300 transition-colors duration-200">Cancel</button>
+                                    <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors duration-200">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payments Content -->
+            <div id="payments" class="content-section p-6">
+                <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
+                    <div class="border-b pb-4 mb-4">
+                        <div class="flex space-x-4">
+                            <button class="px-4 py-2 font-medium text-orange-500 border-b-2 border-orange-500 focus:outline-none">
+                                Payment Methods
+                            </button>
+                            <button class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700 focus:outline-none">
+                                Transaction History
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="font-medium text-lg mb-4">Your Payment Methods</h4>
+                        <div class="space-y-4">
+                            <!-- Payment Method 1 -->
+                            <div class="border rounded-lg p-4 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-8 bg-blue-100 rounded flex items-center justify-center mr-4">
+                                        <i class="fab fa-cc-visa text-blue-800 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-medium">Visa ending in 4242</h5>
+                                        <p class="text-sm text-gray-500">Expires 05/2025</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Default</span>
+                                    <button class="text-gray-500 hover:text-gray-700"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Payment Method 2 -->
+                            <div class="border rounded-lg p-4 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-8 bg-red-100 rounded flex items-center justify-center mr-4">
+                                        <i class="fab fa-cc-mastercard text-red-800 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-medium">Mastercard ending in 8888</h5>
+                                        <p class="text-sm text-gray-500">Expires 12/2024</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="text-gray-500 hover:text-gray-700"><i class="fas fa-ellipsis-v"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="mt-4 px-4 py-2 border border-gray-300 rounded-md flex items-center text-gray-700 hover:bg-gray-50">
+                            <i class="fas fa-plus mr-2"></i>
+                            <span>Add New Payment Method</span>
+                        </button>
+                    </div>
+
+                    <div>
+                        <h4 class="font-medium text-lg mb-4">Recent Transactions</h4>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kitchen</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receipt</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Harbor View Kitchen</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">Jun 28, 2023</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">$300.00</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <a href="#" class="text-orange-500 hover:text-orange-700">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Downtown Culinary Studio</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">Jun 15, 2023</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">$260.00</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <a href="#" class="text-orange-500 hover:text-orange-700">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Eastside Prep Kitchen</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">Jun 10, 2023</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">$160.00</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <a href="#" class="text-orange-500 hover:text-orange-700">View</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">Metro Culinary Space</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">May 25, 2023</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">$240.00</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <a href="#" class="text-orange-500 hover:text-orange-700">View</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Content -->
+            <div id="support" class="content-section p-6">
+                <div class="bg-white rounded-lg shadow-sm p-5 mb-6">
+                    <h3 class="font-semibold text-lg mb-4">Get Support</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="border rounded-lg p-5 flex flex-col items-center text-center">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                                <i class="fas fa-comments text-blue-600 text-xl"></i>
+                            </div>
+                            <h4 class="font-medium mb-2">Live Chat</h4>
+                            <p class="text-sm text-gray-500 mb-4">Get instant help from our support team through live chat.</p>
+                            <button class="px-4 py-2 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200 mt-auto">Start Chat</button>
+                        </div>
+                        <div class="border rounded-lg p-5 flex flex-col items-center text-center">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-3">
+                                <i class="fas fa-envelope text-green-600 text-xl"></i>
+                            </div>
+                            <h4 class="font-medium mb-2">Email Support</h4>
+                            <p class="text-sm text-gray-500 mb-4">Send us an email and we'll get back to you within 24 hours.</p>
+                            <button class="px-4 py-2 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200 mt-auto">Email Us</button>
+                        </div>
+                        <div class="border rounded-lg p-5 flex flex-col items-center text-center">
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-3">
+                                <i class="fas fa-book text-purple-600 text-xl"></i>
+                            </div>
+                            <h4 class="font-medium mb-2">Knowledge Base</h4>
+                            <p class="text-sm text-gray-500 mb-4">Browse our help articles and FAQs for quick answers.</p>
+                            <button class="px-4 py-2 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors duration-200 mt-auto">View Articles</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h4 class="font-medium text-lg mb-4">Frequently Asked Questions</h4>
+                        <div class="space-y-4" id="faq-accordion">
+                            <div class="border rounded-lg overflow-hidden">
+                                <button class="faq-toggle w-full text-left p-4 focus:outline-none font-medium flex justify-between items-center">
+                                    <span>How do I cancel a booking?</span>
+                                    <i class="fas fa-chevron-down text-gray-500"></i>
+                                </button>
+                                <div class="faq-content p-4 bg-gray-50 border-t" style="display: none;">
+                                    <p class="text-sm text-gray-600">
+                                        You can cancel a booking from the "My Bookings" page. Click on the booking you wish to cancel and select the "Cancel" button. Please note that cancellation policies apply: more than 48 hours before booking starts, you'll receive a full refund; 24-48 hours before, you'll receive a 50% refund; less than 24 hours before, no refund will be provided.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="border rounded-lg overflow-hidden">
+                                <button class="faq-toggle w-full text-left p-4 focus:outline-none font-medium flex justify-between items-center">
+                                    <span>What happens if a kitchen owner cancels my booking?</span>
+                                    <i class="fas fa-chevron-down text-gray-500"></i>
+                                </button>
+                                <div class="faq-content p-4 bg-gray-50 border-t" style="display: none;">
+                                    <p class="text-sm text-gray-600">
+                                        If a kitchen owner cancels your booking, you'll receive a full refund regardless of when the cancellation occurs. We'll also help you find an alternative kitchen space if needed and may provide a discount coupon for your inconvenience.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="border rounded-lg overflow-hidden">
+                                <button class="faq-toggle w-full text-left p-4 focus:outline-none font-medium flex justify-between items-center">
+                                    <span>How do I report an issue with a kitchen I booked?</span>
+                                    <i class="fas fa-chevron-down text-gray-500"></i>
+                                </button>
+                                <div class="faq-content p-4 bg-gray-50 border-t" style="display: none;">
+                                    <p class="text-sm text-gray-600">
+                                        If you encounter any issues with a kitchen, please report it to us within 24 hours of your booking by visiting the "My Bookings" page, selecting the relevant booking, and clicking "Report Issue." Provide details and any photos of the problem. Our support team will investigate and help resolve the situation.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="border rounded-lg overflow-hidden">
+                                <button class="faq-toggle w-full text-left p-4 focus:outline-none font-medium flex justify-between items-center">
+                                    <span>How far in advance can I book a kitchen?</span>
+                                    <i class="fas fa-chevron-down text-gray-500"></i>
+                                </button>
+                                <div class="faq-content p-4 bg-gray-50 border-t" style="display: none;">
+                                    <p class="text-sm text-gray-600">
+                                        Most kitchens allow bookings up to 3 months in advance, though some may permit bookings up to 6 months ahead. The available booking window is displayed on each kitchen's listing page. Last-minute bookings are also possible if there's availability, though some kitchens require a minimum notice period (typically 24-48 hours).
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="border rounded-lg overflow-hidden">
+                                <button class="faq-toggle w-full text-left p-4 focus:outline-none font-medium flex justify-between items-center">
+                                    <span>What safety and health standards do kitchens meet?</span>
+                                    <i class="fas fa-chevron-down text-gray-500"></i>
+                                </button>
+                                <div class="faq-content p-4 bg-gray-50 border-t" style="display: none;">
+                                    <p class="text-sm text-gray-600">
+                                        All kitchens on our platform are required to meet local health and safety regulations. Kitchen owners must provide documentation of health department certifications and regular inspections. We also conduct periodic quality checks and rely on user reviews to ensure ongoing compliance with safety and cleanliness standards.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-medium text-lg mb-4">Contact Us</h4>
+                        <form>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                                    <input type="text" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <input type="email" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                    <input type="text" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                    <textarea rows="4" class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"></textarea>
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors duration-200">Send Message</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="bg-white border-t mt-auto p-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p class="text-sm text-gray-500">&copy; <span id="footerCurrentYear">2023</span> KitchenShare. All rights reserved.</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-sm text-gray-500 hover:text-orange-500">Privacy Policy</a>
+                        <a href="#" class="text-sm text-gray-500 hover:text-orange-500">Terms of Service</a>
+                        <a href="#" class="text-sm text-gray-500 hover:text-orange-500">Help Center</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+    <script src="chef-dashboard.js" defer></script>
+</body>
+</html>
